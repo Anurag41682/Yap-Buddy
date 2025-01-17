@@ -1,31 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
+import { useState } from "react";
 const Landing = () => {
-  const formSchema = z.object({
-    username: z.string().min(2).max(50),
-  });
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-    },
-  });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const initialData = {
+    name: "",
+    roomCode: "",
+  };
+  const [formData, setFormData] = useState(initialData);
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleClick = () => {
+    console.log(formData);
+  };
   return (
     <>
       <div className="landing w-[100vw] h-[100vh] bg-background">
@@ -38,30 +26,27 @@ const Landing = () => {
         <h2 className="text-primary text-3xl text-center font-oswald">
           Your space to chat endlessly and comfortably with others.
         </h2>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 m-10"
-          >
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="username" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
+        <div className="flex flex-col items-center">
+          <div className="flex justify-center mt-16 gap-4 w-[50%] items-center">
+            <Label className="w-[50%] ">Enter your name</Label>
+            <Input
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            ></Input>
+          </div>
+          <div className="flex justify-center mt-7 gap-4 w-[50%] items-center">
+            <Label className="w-[50%] ">Enter room code</Label>
+            <Input
+              name="roomCode"
+              value={formData.roomCode}
+              onChange={handleChange}
+            ></Input>
+          </div>
+          <Button onClick={handleClick} className="mt-7">
+            Start Chatting
+          </Button>
+        </div>
       </div>
     </>
   );
